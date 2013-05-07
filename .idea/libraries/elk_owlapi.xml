@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="elk-owlapi">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/elk-owlapi.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
