@@ -28,7 +28,11 @@ public class RulesGenerator {
     private int numberOfRequestFacts;
     private int numberOfDifferentIndividuals;
 
-    private HashSet<String> rules = new HashSet<String>();
+//    private HashSet<String> rules = new HashSet<String>();
+//    private HashSet<String> factsClasses = new HashSet<String>();
+    private ArrayList<String> factsClasses;
+    private ArrayList<String> factsProperties;
+    private ArrayList<String> rules;
     private HashSet<String> classess = new HashSet<String>();
     private HashSet<String> properties = new HashSet<String>();
     private ArrayList<String> listOfClasses;
@@ -43,7 +47,7 @@ public class RulesGenerator {
     private String _altDelimeter=":";
 
     private int min = 1;
-    private int iterations=3;
+    private int iterations=5;
 
     public RulesGenerator(File ontology, int r, int b, int f, int i) throws OWLOntologyCreationException {
 
@@ -52,10 +56,13 @@ public class RulesGenerator {
         _ontologyLabel = _ontologyManager.getOWLDataFactory().getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
 
         numberOfDifferentIndividuals = i > 0 ? i :1;
-        numberOfRequstedRules = r > 0 ? r : 1;
+        numberOfRequstedRules = r;
         numberOfMaxBodyAtomesPerRule = b > 2 ? b : 2;
-        numberOfRequestFacts = f > 0 ? f : 1;
+        numberOfRequestFacts = f;
 
+        factsClasses = new ArrayList<String>(numberOfRequestFacts+1);
+        factsProperties = new ArrayList<String>(numberOfRequestFacts+1);
+        rules = new ArrayList<String>(numberOfRequstedRules+1);
         collectAllClassesAndRules();
         createFacts();
         createRules();
@@ -81,20 +88,25 @@ public class RulesGenerator {
         for(int f = 1; f<=numberOfRequestFacts; f++){
             if(choseClassOrProperty()==PredicateType.CLASS){
                 rule = getRandomClass() + "(a"+randomNumber(numberOfDifferentIndividuals)+").";
+                factsClasses.add(rule);
             }else{
                 rule = getRandomProperty() + "(a"+randomNumber(numberOfDifferentIndividuals)+", a"+randomNumber(numberOfDifferentIndividuals)+").";
+                factsProperties.add(rule);
             }
-            rules.add(rule);
+
         }
     }
 
     private void createRules(){
-        int b1 = randomNumber(numberOfMaxBodyAtomesPerRule);
-        int b2 = randomNumber(b1);
-        int v = 1, u = 1;
+        int b1,b2;
+        int v, u;
         int n1, n2;
         String rule;
         for(int j=0; j<numberOfRequstedRules; j++){
+            v = 1;
+            u = 1;
+            b1 = randomNumber(numberOfMaxBodyAtomesPerRule);
+            b2 = randomNumber(b1);
             if(choseClassOrProperty()==PredicateType.CLASS){
                 rule = getRandomClass()+"(X1) :- ";
                 if(choseClassOrProperty()==PredicateType.CLASS){
@@ -137,11 +149,13 @@ public class RulesGenerator {
                 }
             }
             if(b2<b1){
-                for(int i=1; i< (b1-b2);i++){
-                    if(choseClassOrProperty()==PredicateType.CLASS){
+                for(int i=1; i < (b1-b2);i++){
+                    if(v==1 || choseClassOrProperty()==PredicateType.CLASS){
                         rule +=", not "+getRandomClass()+"(X"+randomNumber(v)+")";
                     }else{
-                        rule +=", not "+getRandomProperty()+"(X"+randomNumber(v)+", X"+randomNumber(v)+")";
+                        n1 = randomNumber(v);
+                        n2 = randomNotEqNumber(v,n1);
+                        rule +=", not "+getRandomProperty()+"(X"+n1+", X"+n2+")";
                     }
                 }
             }
@@ -154,6 +168,13 @@ public class RulesGenerator {
 
         FileWriter writer = new FileWriter("result.p");
 
+        for(String str: factsClasses) {
+            writer.write(str+"\n");
+        }
+
+        for(String str: factsProperties) {
+            writer.write(str+"\n");
+        }
         for(String str: rules) {
             writer.write(str+"\n");
         }
@@ -178,11 +199,11 @@ public class RulesGenerator {
 
     private String getRandomClass(){
 
-        return listOfClasses.get(randomNumber(numberOfClasses-1));
+        return listOfClasses.get(randomNumber(numberOfClasses)-1);
     }
     private String getRandomProperty(){
 
-        return listOfProperties.get(randomNumber(numberOfProperties-1));
+        return listOfProperties.get(randomNumber(numberOfProperties)-1);
     }
 
 

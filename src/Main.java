@@ -30,9 +30,10 @@ public class Main {
             int i = inp.nextInt();
 
             RulesGenerator rulesGenerator = new RulesGenerator(file.getSelectedFile(), r, b, f, i);
-
-            file.setSelectedFile(rulesGenerator.getRules());
-            int val = file.showSaveDialog(file.getParent());
+            rulesGenerator.getRules();
+//            file.setSelectedFile(rulesGenerator.getRules());
+//            int val = file.showSaveDialog(file.getParent());
+//            if(val == )
         }   else{
             System.out.println("choose ontology");
         }
