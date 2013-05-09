@@ -18,7 +18,8 @@ public class RulesGenerator {
 
     /** The _ontology. */
     private OWLOntology _ontology;
-
+    /** The _ontology ID. */
+    private static String _ontologyID;
     private OWLOntologyManager _ontologyManager;
 
     private OWLAnnotationProperty _ontologyLabel;
@@ -53,6 +54,10 @@ public class RulesGenerator {
 
         _ontologyManager=OWLManager.createOWLOntologyManager();
         _ontology=_ontologyManager.loadOntologyFromOntologyDocument(ontology);
+
+        String _ = _ontology.getOntologyID().getOntologyIRI().toString();
+
+        _ontologyID = _.contains("/") ? _.substring(0, _.lastIndexOf("/")) + "/" : "";
         _ontologyLabel = _ontologyManager.getOWLDataFactory().getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
 
         numberOfDifferentIndividuals = i > 0 ? i :1;
@@ -164,9 +169,12 @@ public class RulesGenerator {
     }
 
 
-    public File getRules() throws IOException {
+    public File getRules(String resultPath) throws IOException {
 
-        FileWriter writer = new FileWriter("result.p");
+        if(resultPath==null || resultPath.length()==0)
+            resultPath = "result.p";
+
+        FileWriter writer = new FileWriter(resultPath);
 
         for(String str: factsClasses) {
             writer.write(str+"\n");
@@ -180,7 +188,7 @@ public class RulesGenerator {
         }
         writer.close();
 
-        return new File("result.p");
+        return new File(resultPath);
     }
 
 
@@ -216,7 +224,7 @@ public class RulesGenerator {
         }else{
             name = getRuleFromString(owl);
         }
-        return name;
+        return name.replace("^^xsd:string","");
     }
     private String getName(OWLClass _class){
         return getName(_class.getAnnotations(_ontology, _ontologyLabel), _class.toString());
@@ -226,17 +234,28 @@ public class RulesGenerator {
         return getName(objectProperty.getAnnotations(_ontology, _ontologyLabel), objectProperty.toString());
     }
     private String getRuleFromString(String rule){
-        String result="";
         int numInList = 1;
-        if(rule.contains(_delimeter))
-            result=(rule.split(_delimeter)[numInList]).split(">")[0];
-        else if (rule.contains(_altDelimeter)) {
-            result=(rule.split(_altDelimeter)[numInList]).split(">")[0];
-        }
-        else
-            result="";
+        rule = rule.replace(_ontologyID,"");
+        try{
+            String result;
+            if(rule.contains(_delimeter))
+                result=(rule.split(_delimeter)[numInList]).split(">")[0];
+            else if (rule.contains(_altDelimeter))
+                result=(rule.split(_altDelimeter)[numInList]).split(">")[0];
+            else if(rule.startsWith("<"))
+                result = rule.replaceFirst("<","").replace(">","");
+            else
+                result="";
 
-        return result;
+            return result;
+        }catch (Exception e){
+            System.out.println("------------------------------------------------------------------------");
+            System.out.println(rule);
+            System.out.println(Integer.toString(numInList));
+            System.out.println("------------------------------------------------------------------------");
+            System.out.println(e.toString());
+        }
+        return rule;
     }
 
     private PredicateType choseClassOrProperty(){
