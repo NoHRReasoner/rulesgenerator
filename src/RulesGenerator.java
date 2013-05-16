@@ -42,6 +42,11 @@ public class RulesGenerator {
     private int numberOfClasses;
     private int numberOfProperties;
 
+    private int maxChooser;
+    private int minChooser;
+    private PredicateType maxChooserType;
+    private PredicateType minChooserType;
+
     private Random random = new Random();
 
     private String _delimeter="#";
@@ -76,7 +81,8 @@ public class RulesGenerator {
 
     private void collectAllClassesAndRules(){
         for (OWLClass owlClass: _ontology.getClassesInSignature()){
-            classess.add(getName(owlClass));
+            if(!(owlClass.isOWLThing() || owlClass.isOWLNothing()))
+                classess.add(getName(owlClass));
         }
         numberOfClasses = classess.size();
         listOfClasses = new ArrayList<String>(classess);
@@ -85,6 +91,19 @@ public class RulesGenerator {
         }
         numberOfProperties = properties.size();
         listOfProperties = new ArrayList<String>(properties);
+
+
+        maxChooser = numberOfClasses + numberOfProperties;
+
+        if(numberOfClasses<numberOfProperties){
+            minChooser = numberOfClasses;
+            minChooserType = PredicateType.CLASS;
+            maxChooserType = PredicateType.PROPERTY;
+        }else{
+            minChooser = numberOfProperties;
+            minChooserType = PredicateType.PROPERTY;
+            maxChooserType = PredicateType.CLASS;
+        }
     }
 
 
@@ -221,10 +240,13 @@ public class RulesGenerator {
             for (OWLAnnotation annotation : annotations) {
                 name += annotation.getValue();
             }
+            if(name.length()>0){
+                name = "\""+name.replace("^^xsd:string","").replace(",","").replace(":-","").replace("'","").replace("\"","")+"\"";
+            }
         }else{
             name = getRuleFromString(owl);
         }
-        return name.replace("^^xsd:string","");
+        return name;
     }
     private String getName(OWLClass _class){
         return getName(_class.getAnnotations(_ontology, _ontologyLabel), _class.toString());
@@ -259,11 +281,11 @@ public class RulesGenerator {
     }
 
     private PredicateType choseClassOrProperty(){
-        int i = randomNumber(10);
-        if(i<=5)
-            return PredicateType.CLASS;
+        int i = randomNumber(maxChooser);
+        if(i<=minChooser)
+            return minChooserType;
         else
-            return PredicateType.PROPERTY;
+            return maxChooserType;
     }
     public enum PredicateType {
         PROPERTY,
