@@ -13,9 +13,9 @@ public class Main {
     public static void main(String[] args) throws IOException, OWLOntologyCreationException {
 
 
-//        RulesGenerator rulesrg = new RulesGenerator(new File("/Users/vadimivanov/Documents/University/tests/ontologies/chebi.owl"), 7000, 10, 7000, 700);
-//        rulesrg.getRules("chebi.p");
-//        System.exit(0);
+        RulesGenerator rulesrg = new RulesGenerator(new File("/Users/vadimivanov/Documents/University/tests/ontologies/fly_anatomy.owl"), 50, 10, 0, 20000, 3, 10);
+        rulesrg.getRules("");
+        System.exit(0);
 
 //        Map<String,String> ontologies = new HashMap<String, String>();
 //        ontologies.put("snomed1","ontologies/SnomedFunctSyn.owl");
@@ -58,32 +58,51 @@ public class Main {
 
         String currentDir=new java.io.File(".").getCanonicalPath();
         JFileChooser file = new JFileChooser(currentDir);
-        file.setSelectedFile(new File("/Users/vadimivanov/Downloads/mkn@fct.unl.pt - cities example/cities.owl"));
-        int result = file.showDialog(null, "Choose ontology");
+        file.setSelectedFile(new File("/Users/vadimivanov/Documents/University/tests/ontologies/fly_anatomy.owl"));
 
-        if(result == JFileChooser.APPROVE_OPTION){
 
-            Scanner inp = new Scanner( System.in ); // System.in через сканер
-            System.out.println("enter number of requested rules, r = ");
-            int r = inp.nextInt();
+        File ont = null;
 
-            System.out.println("enter number of maximum body atoms per rule, b = ");
-            int b = inp.nextInt();
+        if(args.length>0){
+            String ontologyPath = args[0];
+            ont = new File(ontologyPath);
 
-            System.out.println("enter number of requested facts, f = ");
-            int f = inp.nextInt();
+        }
+        if(ont == null || !ont.exists()){
+            int result = file.showDialog(null, "Choose ontology");
+            if(result == JFileChooser.APPROVE_OPTION){
+                ont = file.getSelectedFile();
+            }else{
+                System.out.println("Choose ontology");
+                System.exit(0);
+            }
+        }
 
-            System.out.println("enter number of different individuals, i = ");
-            int i = inp.nextInt();
 
-            RulesGenerator rulesGenerator = new RulesGenerator(file.getSelectedFile(), r, b, f, i);
-            rulesGenerator.getRules("");
+        Scanner inp = new Scanner( System.in ); // System.in через сканер
+        System.out.println("enter number of requested rules, r = ");
+        int r = inp.nextInt();
+
+        System.out.println("enter number of maximum body atoms per rule, b = ");
+        int b = inp.nextInt();
+
+        System.out.println("enter number of requested facts, f = ");
+        int f = inp.nextInt();
+
+        System.out.println("enter number of different individuals, i = ");
+        int i = inp.nextInt();
+
+        System.out.println("enter number of new predicates, n = ");
+        int n = inp.nextInt();
+
+        System.out.println("enter maximum arity of these predicates, a = ");
+        int a = inp.nextInt();
+
+        RulesGenerator rulesGenerator = new RulesGenerator(ont, r, b, f, i, a, n);
+        rulesGenerator.getRules("");
 //            file.setSelectedFile(rulesGenerator.getRules());
 //            int val = file.showSaveDialog(file.getParent());
 //            if(val == )
-        }   else{
-            System.out.println("choose ontology");
-        }
                 System.exit(0);
     }
 
