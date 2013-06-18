@@ -17,67 +17,42 @@ public class Main {
 //        rulesrg.getRules("chebi.p");
 //        System.exit(0);
 
-//        Map<String,String> ontologies = new HashMap<String, String>();
-//        ontologies.put("union","ontologies/union.owl");
-//        ontologies.put("molecule_role","ontologies/molecule_role.owl");
-//        ontologies.put("go2","ontologies/go2_1.owl");
-//        ontologies.put("go1","ontologies/go1.owl");
-//        ontologies.put("galen8","ontologies/galen8.owl");
-//        ontologies.put("galen7","ontologies/galen7.owl");
-//        ontologies.put("galen","ontologies/galen.owl");
-//        ontologies.put("fma","ontologies/fma_1.owl");
-//        ontologies.put("fly_anatomy","ontologies/fly_anatomy.owl");
-//        ontologies.put("emap","ontologies/emap.owl");
-//        ontologies.put("chebi","ontologies/chebi.owl");
-//        ontologies.put("snomed","ontologies/SnomedFunctSyn.owl");
-//        ontologies.put("snomed1","ontologies/SnomedFunctSyn.owl");
-//        ontologies.put("snomed2","ontologies/SnomedFunctSyn.owl");
-//        ontologies.put("snomed3","ontologies/SnomedFunctSyn.owl");
-//        ontologies.put("snomed4","ontologies/SnomedFunctSyn.owl");
-//        ontologies.put("snomed5","ontologies/SnomedFunctSyn.owl");
-//        ontologies.put("snomed6","ontologies/SnomedFunctSyn.owl");
-//        ontologies.put("snomed7","ontologies/SnomedFunctSyn.owl");
-//        ontologies.put("snomed8","ontologies/SnomedFunctSyn.owl");
-//        ontologies.put("snomed9","ontologies/SnomedFunctSyn.owl");
-//        ontologies.put("snomed10","ontologies/SnomedFunctSyn.owl");
+        Map<String,String> ontologies = new HashMap<String, String>();
+        ontologies.put("snomed1","ontologies/SnomedFunctSyn.owl");
+        ontologies.put("snomed2","ontologies/SnomedFunctSyn.owl");
+        ontologies.put("snomed3","ontologies/SnomedFunctSyn.owl");
+        ontologies.put("snomed4","ontologies/SnomedFunctSyn.owl");
+        ontologies.put("snomed5","ontologies/SnomedFunctSyn.owl");
+        ontologies.put("snomed6","ontologies/SnomedFunctSyn.owl");
+        ontologies.put("snomed7","ontologies/SnomedFunctSyn.owl");
+        ontologies.put("snomed8","ontologies/SnomedFunctSyn.owl");
+        ontologies.put("snomed9","ontologies/SnomedFunctSyn.owl");
+        ontologies.put("snomed10","ontologies/SnomedFunctSyn.owl");
 
-//        Dictionary<String, rulesSettings> settings = new Hashtable<String, rulesSettings>();
-//        settings.put("union", new rulesSettings());
-//        settings.put("molecule_role", new rulesSettings(10000));
-//        settings.put("go2", new rulesSettings(70000));
-//        settings.put("go1", new rulesSettings(30000));
-//        settings.put("galen8", new rulesSettings(160000));
-//        settings.put("galen7", new rulesSettings(45000));
-//        settings.put("galen", new rulesSettings(40000));
-//        settings.put("fma", new rulesSettings(120000));
-//        settings.put("fly_anatomy", new rulesSettings(20000));
-//        settings.put("emap", new rulesSettings(14000));
-//        settings.put("chebi", new rulesSettings(70000));
-//        settings.put("anatomy", new rulesSettings(40000));
-//        settings.put("snomed", new rulesSettings(300000));
-//        settings.put("snomed1", new rulesSettings(20000));
-//        settings.put("snomed2", new rulesSettings(40000));
-//        settings.put("snomed3", new rulesSettings(60000));
-//        settings.put("snomed4", new rulesSettings(80000));
-//        settings.put("snomed5", new rulesSettings(100000));
-//        settings.put("snomed6", new rulesSettings(120000));
-//        settings.put("snomed7", new rulesSettings(140000));
-//        settings.put("snomed8", new rulesSettings(160000));
-//        settings.put("snomed9", new rulesSettings(180000));
-//        settings.put("snomed10", new rulesSettings(200000));
-//        settings.put("elgalen", new rulesSettings(70000, 7000));
+        Dictionary<String, rulesSettings> settings = new Hashtable<String, rulesSettings>();
+        settings.put("snomed1", new rulesSettings(20000));
+        settings.put("snomed2", new rulesSettings(40000));
+        settings.put("snomed3", new rulesSettings(60000));
+        settings.put("snomed4", new rulesSettings(80000));
+        settings.put("snomed5", new rulesSettings(100000));
+        settings.put("snomed6", new rulesSettings(120000));
+        settings.put("snomed7", new rulesSettings(140000));
+        settings.put("snomed8", new rulesSettings(160000));
+        settings.put("snomed9", new rulesSettings(180000));
+        settings.put("snomed10", new rulesSettings(200000));
 
-//        rulesSettings _ruleSet;
-//        for(Map.Entry<String,String> ontology: ontologies.entrySet()){
-//            System.out.println();
-//            System.out.println("-------------------------------------------------------------------------------------");
-//            System.out.println("Ontology:"+ontology.getKey());
-//
-//            _ruleSet = settings.get(ontology.getKey());
-//            RulesGenerator rulesGenerator = new RulesGenerator(new File(ontology.getValue()), _ruleSet.r, _ruleSet.b, _ruleSet.f, _ruleSet.i);
-//            rulesGenerator.getRules("rules/"+ontology.getKey()+".p");
-//        }
+        rulesSettings _ruleSet;
+        for(Map.Entry<String,String> ontology: ontologies.entrySet()){
+            System.out.println();
+            System.out.println("-------------------------------------------------------------------------------------");
+            System.out.println("Ontology:"+ontology.getKey());
 
+            _ruleSet = settings.get(ontology.getKey());
+            RulesGenerator rulesGenerator = new RulesGenerator(new File(ontology.getValue()), _ruleSet.r, _ruleSet.b, _ruleSet.f, _ruleSet.i);
+            rulesGenerator.getRules("rules/"+ontology.getKey()+".p");
+        }
+
+        System.exit(0);
 
 
 
@@ -109,7 +84,7 @@ public class Main {
         }   else{
             System.out.println("choose ontology");
         }
-
+                System.exit(0);
     }
 
     public static class rulesSettings{
