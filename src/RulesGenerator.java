@@ -225,7 +225,7 @@ public class RulesGenerator {
                         if(n2==(variableCounter+1))
                             variableCounter++;
                     }else if (predicateType == PredicateType.NEWPREDICATE){
-                        subPredicate = getRandomNewPredicateRandom(randomNumber(variableCounter + 1));
+                        subPredicate = getRandomNewPredicateRandom(randomNumber(variableCounter + 1), false);
                         rule+=", "+subPredicate.rule;
                         if(variableCounter<=subPredicate.max)
                             variableCounter = subPredicate.max + 1;
@@ -242,7 +242,8 @@ public class RulesGenerator {
                         n2 = randomNotEqNumber(variableCounter, n1);
                         rule +=", not "+getRandomProperty()+"(X"+n1+", X"+n2+")";
                     }else if (predicateType == PredicateType.NEWPREDICATE){
-                        subPredicate = getRandomNewPredicateRandom(randomNumber(variableCounter));
+//                        subPredicate = getRandomNewPredicateRandom(randomNumber(variableCounter), false);
+                        subPredicate = getRandomNewPredicateRandom(variableCounter, true);
                         rule+=", not "+subPredicate.rule;
                     }
                 }
@@ -329,7 +330,7 @@ public class RulesGenerator {
         predicate.a = a;
         return predicate;
     }
-    private Predicate getRandomNewPredicateRandom(int v){
+    private Predicate getRandomNewPredicateRandom(int v, boolean isForTnot){
         int np = randomNumber(numberOfNewPredicates);
         String rule = "p"+np+"(";
         int a = newPropertiesArity[np-1];
@@ -341,7 +342,7 @@ public class RulesGenerator {
             vars[i] = x;
             if(max<x)
                 max = x;
-            if(x==v)
+            if(!isForTnot && x==v)
                 v++;
             rule+="X"+x+", ";
         }
