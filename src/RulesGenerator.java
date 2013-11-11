@@ -258,7 +258,12 @@ public class RulesGenerator {
         if(resultPath==null || resultPath.length()==0)
             resultPath = "result.p";
 
-        FileWriter writer = new FileWriter(resultPath);
+        File result = new File(resultPath);
+        if (result.getParentFile() != null) {
+            result.getParentFile().mkdirs();
+        }
+
+        FileWriter writer = new FileWriter(result);
 
         for(String str: factsClasses) {
             writer.write(str+"\n");
@@ -275,7 +280,7 @@ public class RulesGenerator {
         }
         writer.close();
 
-        return new File(resultPath);
+        return result;
     }
 
 
