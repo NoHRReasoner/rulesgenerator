@@ -6,11 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8235da8f-5fba-4180-97a6-a433f7cb896a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.java" afterPath="$PROJECT_DIR$/src/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/RulesGenerator.java" afterPath="$PROJECT_DIR$/src/RulesGenerator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="8235da8f-5fba-4180-97a6-a433f7cb896a" name="Default" comment="" />
     <ignored path="RulesGenerator.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/RulesGenerator.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1384200058458" ignored="false" />
@@ -21,7 +17,7 @@
     <file path="$PROJECT_DIR$/../OWLElkReasoner/src/TestWithRules.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1368218210753" ignored="false" />
     <file path="/TestWithRules.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1368180247351" ignored="false" />
     <file path="$PROJECT_DIR$/../OWLElkReasoner/src/Ontology.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1368185721439" ignored="false" />
-    <file path="/Ontology.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1368185703264" ignored="false" />
+    <file path="/Ontology.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1384202387247" ignored="false" />
     <file path="$PROJECT_DIR$/../OWLElkReasoner/src/Test.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1368185884538" ignored="false" />
     <file path="$PROJECT_DIR$/../OWLElkReasoner/result.p" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1368177337431" ignored="false" />
     <file path="/Labels.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1371550721871" ignored="false" />
@@ -31,6 +27,9 @@
     <file path="/sample.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1373583345013" ignored="false" />
     <file path="$USER_HOME$/Dropbox/Универ/Algorithms/src/RandomizedContraction.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1374535031191" ignored="false" />
     <file path="/RandomizedContraction.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1374535026622" ignored="false" />
+    <file path="$PROJECT_DIR$/../restored/src/Console.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1384202535504" ignored="false" />
+    <file path="/Console.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1384202221348" ignored="false" />
+    <file path="$PROJECT_DIR$/../restored/src/local/translate/Ontology.java" changelist="8235da8f-5fba-4180-97a6-a433f7cb896a" time="1384202387621" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,10 +90,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Main.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Main.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="71" column="26" selection-start="2616" selection-end="2616" vertical-scroll-proportion="0.739726">
+            <state line="64" column="12" selection-start="2339" selection-end="2364" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -109,10 +108,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RulesGenerator.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="RulesGenerator.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/RulesGenerator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="262" column="12" selection-start="11589" selection-end="11589" vertical-scroll-proportion="0.0">
+            <state line="265" column="29" selection-start="11662" selection-end="11662" vertical-scroll-proportion="0.54253834">
               <folding />
             </state>
           </provider>
@@ -166,7 +165,6 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="4" />
     <option name="y" value="22" />
     <option name="width" value="1436" />
     <option name="height" value="878" />
@@ -392,7 +390,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="4" y="22" width="1436" height="878" extended-state="0" />
+    <frame x="0" y="22" width="1436" height="878" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298153" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -572,13 +570,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/RulesGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="262" column="12" selection-start="11589" selection-end="11589" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/result.p">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="19" selection-start="562" selection-end="562" vertical-scroll-proportion="0.0">
@@ -588,7 +579,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="26" selection-start="2616" selection-end="2616" vertical-scroll-proportion="0.739726">
+        <state line="64" column="12" selection-start="2339" selection-end="2364" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/RulesGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="265" column="29" selection-start="11662" selection-end="11662" vertical-scroll-proportion="0.54253834">
           <folding />
         </state>
       </provider>
