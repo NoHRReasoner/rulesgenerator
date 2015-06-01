@@ -18,22 +18,27 @@ public class RulesGenerator {
 
     /** The _ontology. */
     private OWLOntology _ontology;
-    /** The _ontology ID. */
-    private static String _ontologyID;
+
     private OWLOntologyManager _ontologyManager;
 
     private OWLAnnotationProperty _ontologyLabel;
+
+    private Labels labels;
 
     private int numberOfRequstedRules;
     private int numberOfMaxBodyAtomesPerRule;
     private int numberOfRequestFacts;
     private int numberOfDifferentIndividuals;
+    private int numberOfNewPredicates;
+    private int numberOfMaxArityOfNewPredicates;
 
 //    private HashSet<String> rules = new HashSet<String>();
 //    private HashSet<String> factsClasses = new HashSet<String>();
     private ArrayList<String> factsClasses;
     private ArrayList<String> factsProperties;
+    private ArrayList<String> factsNewPredicates;
     private ArrayList<String> rules;
+    private int[] newPropertiesArity;
     private HashSet<String> classess = new HashSet<String>();
     private HashSet<String> properties = new HashSet<String>();
     private ArrayList<String> listOfClasses;
@@ -43,37 +48,30 @@ public class RulesGenerator {
     private int numberOfProperties;
 
     private int maxChooser;
-    private int minChooser;
-    private PredicateType maxChooserType;
-    private PredicateType minChooserType;
-
-    private Random random = new Random();
-
-    private String _delimeter="#";
-    private String _altDelimeter=":";
-
     private int min = 1;
     private int iterations=5;
 
-    public RulesGenerator(File ontology, int r, int b, int f, int i) throws OWLOntologyCreationException {
+    public RulesGenerator(File ontology, int r, int b, int f, int i, int a, int n) throws OWLOntologyCreationException {
 
         _ontologyManager=OWLManager.createOWLOntologyManager();
         _ontology=_ontologyManager.loadOntologyFromOntologyDocument(ontology);
-
-        String _ = _ontology.getOntologyID().getOntologyIRI().toString();
-
-        _ontologyID = _.contains("/") ? _.substring(0, _.lastIndexOf("/")) + "/" : "";
         _ontologyLabel = _ontologyManager.getOWLDataFactory().getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
+        labels = new Labels(_ontology, _ontologyLabel);
+
 
         numberOfDifferentIndividuals = i > 0 ? i :1;
         numberOfRequstedRules = r;
         numberOfMaxBodyAtomesPerRule = b > 2 ? b : 2;
         numberOfRequestFacts = f;
+        numberOfNewPredicates = n > 0 ? n : 1;
+        numberOfMaxArityOfNewPredicates = a;
 
         factsClasses = new ArrayList<String>(numberOfRequestFacts+1);
         factsProperties = new ArrayList<String>(numberOfRequestFacts+1);
+        factsNewPredicates = new ArrayList<String>(numberOfRequestFacts+1);
         rules = new ArrayList<String>(numberOfRequstedRules+1);
         collectAllClassesAndRules();
+        createNewPredicates();
         createFacts();
         createRules();
 
@@ -82,104 +80,171 @@ public class RulesGenerator {
     private void collectAllClassesAndRules(){
         for (OWLClass owlClass: _ontology.getClassesInSignature()){
             if(!(owlClass.isOWLThing() || owlClass.isOWLNothing()))
-                classess.add(getName(owlClass));
+                classess.add(labels.getName(owlClass));
         }
         numberOfClasses = classess.size();
         listOfClasses = new ArrayList<String>(classess);
         for (OWLObjectProperty objectProperty: _ontology.getObjectPropertiesInSignature()){
-            properties.add(getName(objectProperty));
+            properties.add(labels.getName(objectProperty));
         }
         numberOfProperties = properties.size();
         listOfProperties = new ArrayList<String>(properties);
 
+        maxChooser = numberOfClasses + numberOfProperties + numberOfNewPredicates;
+    }
 
-        maxChooser = numberOfClasses + numberOfProperties;
-
-        if(numberOfClasses<numberOfProperties){
-            minChooser = numberOfClasses;
-            minChooserType = PredicateType.CLASS;
-            maxChooserType = PredicateType.PROPERTY;
-        }else{
-            minChooser = numberOfProperties;
-            minChooserType = PredicateType.PROPERTY;
-            maxChooserType = PredicateType.CLASS;
+    private void createNewPredicates(){
+        newPropertiesArity = new int[numberOfNewPredicates];
+        for(int i = 0; i< newPropertiesArity.length; i++){
+            newPropertiesArity[i] = randomNumber(numberOfMaxArityOfNewPredicates);
         }
     }
 
-
     private void createFacts(){
         String rule="";
+        PredicateType predicateType;
         for(int f = 1; f<=numberOfRequestFacts; f++){
-            if(choseClassOrProperty()==PredicateType.CLASS){
-                rule = getRandomClass() + "(a"+randomNumber(numberOfDifferentIndividuals)+").";
-                factsClasses.add(rule);
-            }else{
-                rule = getRandomProperty() + "(a"+randomNumber(numberOfDifferentIndividuals)+", a"+randomNumber(numberOfDifferentIndividuals)+").";
-                factsProperties.add(rule);
+            predicateType = choosePredicateTypeForFacts();
+            switch (predicateType){
+                case CLASS:
+                    rule = getRandomClass() + "(a"+randomNumber(numberOfDifferentIndividuals)+").";
+                    factsClasses.add(rule);
+                    break;
+                case PROPERTY:
+                    rule = getRandomProperty() + "(a"+randomNumber(numberOfDifferentIndividuals)+", a"+randomNumber(numberOfDifferentIndividuals)+").";
+                    factsProperties.add(rule);
+                    break;
+                case NEWPREDICATE:
+                    int i = randomNumber(numberOfNewPredicates);
+                    rule = "p"+i+"(";
+                    int a = newPropertiesArity[i-1];
+                    for(int j = 1; j<=a; j++){
+                        rule +="a"+randomNumber(numberOfDifferentIndividuals)+", ";
+                    }
+                    rule = rule.substring(0, rule.length()-2);
+                    rule+=").";
+                    factsNewPredicates.add(rule);
+                    break;
+                default:
+                    break;
             }
-
         }
     }
 
     private void createRules(){
-        int b1,b2;
-        int v, u;
+        int numberOfBodyAtoms,numberOfPositiveBodyAtoms;
+        int variableCounter, usedBodyAtoms;
         int n1, n2;
+        int arity;
         String rule;
+        PredicateType predicateType;
+        Predicate predicate;
+        Predicate subPredicate;
         for(int j=0; j<numberOfRequstedRules; j++){
-            v = 1;
-            u = 1;
-            b1 = randomNumber(numberOfMaxBodyAtomesPerRule);
-            b2 = randomNumber(b1);
-            if(choseClassOrProperty()==PredicateType.CLASS){
+            variableCounter = 0;
+            usedBodyAtoms = 1;
+            numberOfBodyAtoms = randomNumber(numberOfMaxBodyAtomesPerRule);
+            numberOfPositiveBodyAtoms = randomNumber(numberOfBodyAtoms);
+            predicateType = choosePredicateTypeForRules();
+            rule = "";
+            if(predicateType == PredicateType.CLASS){
                 rule = getRandomClass()+"(X1) :- ";
-                if(choseClassOrProperty()==PredicateType.CLASS){
+                predicateType = choosePredicateTypeForRules();
+                if(predicateType==PredicateType.CLASS){
                     rule += getRandomClass() + "(X1)";
-                }else{
+                    variableCounter=1;
+                }else if(predicateType == PredicateType.PROPERTY){
                     rule += getRandomProperty() + "(X1, X2)";
-                    v=2;
+                    variableCounter=2;
+                }else if(predicateType == PredicateType.NEWPREDICATE){
+                    subPredicate = getRandomNewPredicate(0);
+                    rule += subPredicate.rule;
+                    variableCounter = subPredicate.a;
                 }
-            }else{
+            }else if (predicateType == PredicateType.PROPERTY){
                 rule = getRandomProperty()+ "(X1, X2) :- ";
-                if(b2==1){
+                if(numberOfPositiveBodyAtoms==1){
                     rule += getRandomProperty()+"(X1, X2)";
-                    v=2;
+                    variableCounter=2;
                 }else{
-                    if(choseClassOrProperty()==PredicateType.CLASS){
+                    predicateType = choosePredicateTypeForRules();
+                    if(predicateType == PredicateType.CLASS){
                         rule += getRandomClass()+"(X1), "+getRandomClass()+"(X2)";
-                        v=2;
-                        u=2;
-                    }else{
+                        variableCounter=2;
+                        usedBodyAtoms=2;
+                    }else if (predicateType == PredicateType.PROPERTY){
                         rule += getRandomProperty()+"(X1, X2)";
-                        v=2;
+                        variableCounter=2;
+                    }else if (predicateType == PredicateType.NEWPREDICATE){
+                        subPredicate = getRandomNewPredicate(0);
+                        rule += subPredicate.rule;
+                        variableCounter = subPredicate.a;
+                        if(subPredicate.a == 1){
+                            subPredicate = getRandomNewPredicate(1);
+                            rule += subPredicate.rule;
+                            variableCounter = subPredicate.a;
+                            usedBodyAtoms=2;
+                        }
                     }
                 }
+            }else if (predicateType == PredicateType.NEWPREDICATE){
+                subPredicate = getRandomNewPredicate(0);
+                rule = subPredicate.rule + " :- ";
+                arity = subPredicate.a;
+                usedBodyAtoms=0;
+                while(variableCounter<=arity){
+                    predicateType = choosePredicateTypeForRules();
+                    if(predicateType == PredicateType.CLASS){
+                        variableCounter++;
+                        rule+=getRandomClass()+"(X"+variableCounter+"), ";
+                    }else if(predicateType == PredicateType.PROPERTY){
+                        rule+=getRandomProperty()+"(X"+(variableCounter+1)+", X"+(variableCounter+2)+"), ";
+                        variableCounter+=2;
+                    }else if(predicateType == PredicateType.NEWPREDICATE){
+                        subPredicate = getRandomNewPredicate(variableCounter);
+                        rule += subPredicate.rule+", ";
+                        variableCounter = subPredicate.a;
+                    }
+                    usedBodyAtoms++;
+                }
+                rule = rule.substring(0, rule.length()-2);
             }
 
-            if(u<b2){
-                for(int i=1; i<b2-u;i++){
-                    if(choseClassOrProperty()==PredicateType.CLASS){
-                        n1=randomNumber(v+1);
+            if(usedBodyAtoms<numberOfPositiveBodyAtoms){
+                for(int i=1; i<numberOfPositiveBodyAtoms-usedBodyAtoms;i++){
+                    predicateType = choosePredicateTypeForRules();
+                    if(predicateType == PredicateType.CLASS){
+                        n1=randomNumber(variableCounter+1);
                         rule +=", "+getRandomClass()+"(X"+n1+")";
-                        if(n1 == (v+1))
-                            v++;
-                    }else{
-                        n1 = randomNumber(v);
-                        n2 = randomNotEqNumber(v+1,n1);
+                        if(n1 == (variableCounter+1))
+                            variableCounter++;
+                    }else if (predicateType == PredicateType.PROPERTY){
+                        n1 = randomNumber(variableCounter);
+                        n2 = randomNotEqNumber(variableCounter+1,n1);
                         rule +=", "+getRandomProperty()+"(X"+n1+", X"+n2+")";
-                        if(n2==(v+1))
-                            v++;
+                        if(n2==(variableCounter+1))
+                            variableCounter++;
+                    }else if (predicateType == PredicateType.NEWPREDICATE){
+                        subPredicate = getRandomNewPredicateRandom(randomNumber(variableCounter + 1), false);
+                        rule+=", "+subPredicate.rule;
+                        if(variableCounter<=subPredicate.max)
+                            variableCounter = subPredicate.max + 1;
                     }
                 }
             }
-            if(b2<b1){
-                for(int i=1; i < (b1-b2);i++){
-                    if(v==1 || choseClassOrProperty()==PredicateType.CLASS){
-                        rule +=", not "+getRandomClass()+"(X"+randomNumber(v)+")";
-                    }else{
-                        n1 = randomNumber(v);
-                        n2 = randomNotEqNumber(v,n1);
+            if(numberOfPositiveBodyAtoms<numberOfBodyAtoms){
+                for(int i=1; i < (numberOfBodyAtoms-numberOfPositiveBodyAtoms);i++){
+                    predicateType = choosePredicateTypeForRules();
+                    if(variableCounter==1 || predicateType == PredicateType.CLASS){
+                        rule +=", not "+getRandomClass()+"(X"+randomNumber(variableCounter)+")";
+                    }else if (predicateType == PredicateType.PROPERTY){
+                        n1 = randomNumber(variableCounter);
+                        n2 = randomNotEqNumber(variableCounter, n1);
                         rule +=", not "+getRandomProperty()+"(X"+n1+", X"+n2+")";
+                    }else if (predicateType == PredicateType.NEWPREDICATE){
+//                        subPredicate = getRandomNewPredicateRandom(randomNumber(variableCounter), false);
+                        subPredicate = getRandomNewPredicateRandom(variableCounter, true);
+                        rule+=", not "+subPredicate.rule;
                     }
                 }
             }
@@ -193,9 +258,17 @@ public class RulesGenerator {
         if(resultPath==null || resultPath.length()==0)
             resultPath = "result.p";
 
-        FileWriter writer = new FileWriter(resultPath);
+        File result = new File(resultPath);
+        if (result.getParentFile() != null) {
+            result.getParentFile().mkdirs();
+        }
+
+        FileWriter writer = new FileWriter(result);
 
         for(String str: factsClasses) {
+            writer.write(str+"\n");
+        }
+        for(String str: factsNewPredicates) {
             writer.write(str+"\n");
         }
 
@@ -207,7 +280,7 @@ public class RulesGenerator {
         }
         writer.close();
 
-        return new File(resultPath);
+        return result;
     }
 
 
@@ -223,72 +296,99 @@ public class RulesGenerator {
         }
         return number;
     }
+    private int randomNotEqListNumber(int max, final int[] vars){
+        int j=0, number = 1;
+        while (j<iterations && numberInArray(number, vars)){
+            number = randomNumber(max);
+            j++;
+        }
+        return number;
+    }
+    private boolean numberInArray(int n, int[] nums){
+        boolean result = false;
+        for(int i=0;i<nums.length; i++){
+            if(n==nums[i]){
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
 
     private String getRandomClass(){
-
         return listOfClasses.get(randomNumber(numberOfClasses)-1);
     }
     private String getRandomProperty(){
-
         return listOfProperties.get(randomNumber(numberOfProperties)-1);
     }
-
-
-    private String getName(Set<OWLAnnotation> annotations, String owl){
-        String name = "";
-        if(annotations!=null && annotations.size()>0)   {
-            for (OWLAnnotation annotation : annotations) {
-                name += annotation.getValue();
-            }
-            if(name.length()>0){
-                name = "\""+name.replace("^^xsd:string","").replace(",","").replace(":-","").replace("'","").replace("\"","")+"\"";
-            }
-        }else{
-            name = getRuleFromString(owl);
+    private Predicate getRandomNewPredicate(int k){
+        int np = randomNumber(numberOfNewPredicates);
+        String rule = "p"+np+"(";
+        int a = newPropertiesArity[np-1]+k;
+        for(int i=1+k; i<=a; i++){
+            rule+="X"+i+", ";
         }
-        return name;
+        rule = rule.substring(0, rule.length()-2);
+        rule += ")";
+        Predicate predicate = new Predicate();
+        predicate.rule = rule;
+        predicate.a = a;
+        return predicate;
     }
-    private String getName(OWLClass _class){
-        return getName(_class.getAnnotations(_ontology, _ontologyLabel), _class.toString());
-
-    }
-    private String getName(OWLObjectProperty objectProperty){
-        return getName(objectProperty.getAnnotations(_ontology, _ontologyLabel), objectProperty.toString());
-    }
-    private String getRuleFromString(String rule){
-        int numInList = 1;
-        rule = rule.replace(_ontologyID,"");
-        try{
-            String result;
-            if(rule.contains(_delimeter))
-                result=(rule.split(_delimeter)[numInList]).split(">")[0];
-            else if (rule.contains(_altDelimeter))
-                result=(rule.split(_altDelimeter)[numInList]).split(">")[0];
-            else if(rule.startsWith("<"))
-                result = rule.replaceFirst("<","").replace(">","");
-            else
-                result="";
-
-            return result;
-        }catch (Exception e){
-            System.out.println("------------------------------------------------------------------------");
-            System.out.println(rule);
-            System.out.println(Integer.toString(numInList));
-            System.out.println("------------------------------------------------------------------------");
-            System.out.println(e.toString());
+    private Predicate getRandomNewPredicateRandom(int v, boolean isForTnot){
+        int np = randomNumber(numberOfNewPredicates);
+        String rule = "p"+np+"(";
+        int a = newPropertiesArity[np-1];
+        int[] vars = new int[a+1];
+        int max = 0;
+        int x;
+        for(int i=0; i<a; i++){
+            x = randomNotEqListNumber(v, vars);
+            vars[i] = x;
+            if(max<x)
+                max = x;
+            if(!isForTnot && x==v)
+                v++;
+            rule+="X"+x+", ";
         }
-        return rule;
+        rule = rule.substring(0, rule.length()-2);
+        rule += ")";
+        Predicate predicate = new Predicate();
+        predicate.rule = rule;
+        predicate.max = max;
+        return predicate;
     }
 
-    private PredicateType choseClassOrProperty(){
+    private PredicateType choosePredicateTypeForFacts(){
         int i = randomNumber(maxChooser);
-        if(i<=minChooser)
-            return minChooserType;
-        else
-            return maxChooserType;
+        if(i < numberOfNewPredicates)
+            return PredicateType.NEWPREDICATE;
+        else if(i<=(numberOfNewPredicates+numberOfProperties))
+            return PredicateType.PROPERTY;
+        else //if(i<=(numberOfNewPredicates+numberOfProperties+numberOfClasses))
+            return PredicateType.CLASS;
+    }
+    private PredicateType choosePredicateTypeForRules(){
+        int i = randomNumber(10);
+        if(i<=3 && numberOfNewPredicates>0)
+            return PredicateType.NEWPREDICATE;
+        else{
+            i = randomNumber(numberOfClasses + numberOfProperties);
+            if(i<numberOfProperties)
+                return PredicateType.PROPERTY;
+            else
+                return PredicateType.CLASS;
+        }
+    }
+
+    public class Predicate{
+        public String rule;
+        public int a;
+        public int max;
     }
     public enum PredicateType {
         PROPERTY,
-        CLASS
+        CLASS,
+        NEWPREDICATE
     }
 }

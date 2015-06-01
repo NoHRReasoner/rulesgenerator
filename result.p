@@ -1,20 +1,50 @@
-nonSeasideCity(a2).
-portCity(a4).
-recreational(a1).
-nonSeasideCity(a3).
-portCity(a8).
-recreational(a3).
-rainyCity(a9).
-has(a7, a7).
-has(a9, a6).
-onSea(a8, a6).
-beach(X1) :- nonSeasideCity(X1).
-rainyCity(X1) :- seasideCity(X1), onSea(X1, X2), portCity(X3), onSea(X1, X3), has(X2, X1), portCity(X2).
-seasideCity(X1) :- seasideCity(X1), has(X1, X2), recreationalCity(X1), nonSeasideCity(X1), has(X1, X2), seasideCity(X1), not recreational(X2).
-recreationalCity(X1) :- recreationalCity(X1), seasideCity(X1), rainyCity(X2), has(X1, X2), not onSea(X1, X2), not recreationalCity(X2), not has(X2, X1), not rainyCity(X1).
-onSea(X1, X2) :- onSea(X1, X2), not has(X2, X1), not onSea(X2, X1), not nonSeasideCity(X2).
-portCity(X1) :- onSea(X1, X2), not portCity(X1), not beach(X1), not seasideCity(X1), not rainyCity(X1).
-has(X1, X2) :- rainyCity(X1), beach(X2), not onSea(X2, X1).
-portCity(X1) :- rainyCity(X1), not portCity(X1).
-seasideCity(X1) :- seasideCity(X1), not recreationalCity(X1), not beach(X1).
-portCity(X1) :- rainyCity(X1).
+p4(X1, X2) :- FBbt_00100677(X1), FBbt_00000519(X2), p8(X3, X4), not FBbt_00110109(X3).
+FBbt_00004403(X1) :- FBbt_00000840(X1), FBbt_00000283(X2), FBbt_00100193(X3), not p10(X1, X2), not FBbt_00002023(X2).
+FBbt_00002740(X1) :- p10(X1, X2), not FBbt_00001983(X1), not p2(X1), not FBbt_00004155(X1), not p7(X1, X2), not p3(X1), not FBbt_00100088(X1), not FBbt_00000159(X2).
+FBbt_00100442(X1) :- FBbt_00100139(X1).
+FBbt_00004711(X1) :- FBbt_00002913(X1), p7(X1, X2), FBbt_00003848(X4), FBbt_00005369(X3), FBbt_00002107(X4), not FBbt_00001115(X2).
+p3(X1) :- FBbt_00018001(X1), FBbt_00110031(X2), not FBbt_00003424(X1).
+p7(X1, X2) :- FBbt_00003299(X1), FBbt_00004990(X2), p7(X3, X4).
+p7(X1, X2) :- FBbt_00003296(X1), FBbt_00002333(X2), p10(X3, X4), p3(X1), not FBbt_00003121(X1), not FBbt_00004337(X2), not FBbt_00005336(X1), not p3(X1).
+FBbt_00005945(X1) :- p9(X1), not FBbt_00100171(X1), not FBbt_00002195(X1), not FBbt_00001326(X1).
+FBbt_00057170(X1) :- p7(X1, X2), FBbt_00001566(X2), p6(X1).
+FBbt_00003073(X1) :- p10(X1, X2), p8(X1, X2), FBbt_00000558(X3), FBbt_00001205(X2), FBbt_00017009(X1), FBbt_00110080(X3), FBbt_00002861(X1), FBbt_00007343(X4).
+FBbt_00001084(X1) :- p5(X1, X2, X3), not FBbt_00100252(X3), not p6(X1), not p1(X1), not FBbt_00000467(X1), not FBbt_00005996(X2), not FBbt_00100480(X1).
+FBbt_00110098(X1) :- FBbt_00005795(X1), p2(X1), p5(X1, X2, X3), not FBbt_00000097(X1), not FBbt_00004529(X2), not FBbt_00001322(X2).
+FBbt_00100349(X1) :- FBbt_00007453(X1).
+FBbt_00002435(X1) :- FBbt_00002708(X1).
+FBbt_00005093(X1) :- FBbt_00000069(X1), not FBbt_00110004(X1).
+p9(X1) :- FBbt_00000481(X1), FBbt_00005350(X2), p10(X1, X3), not FBbt_00003459(X2).
+p1(X1) :- FBbt_00007550(X1), p6(X2).
+p9(X1) :- p4(X1, X2).
+FBbt_00003784(X1) :- p4(X1, X2), p3(X1), FBbt_00000222(X1), p4(X1, X2), FBbt_00100030(X1).
+p10(X1, X2) :- p5(X1, X2, X3).
+p10(X1, X2) :- FBbt_00002332(X1), FBbt_00005670(X2), p8(X3, X4), not p5(X1, X2, X3), not FBbt_00067009(X3), not FBbt_00003587(X1), not FBbt_00001935(X1).
+p4(X1, X2) :- fasciculates_with(X1, X2), p4(X3, X4), not FBbt_00007579(X2), not FBbt_00002147(X3).
+p5(X1, X2, X3) :- p8(X1, X2), p9(X3), FBbt_00004309(X4), not FBbt_00000173(X2), not p1(X1).
+FBbt_00004902(X1) :- FBbt_00000752(X1), not FBbt_00100210(X1), not FBbt_00004527(X1), not FBbt_00005894(X1), not FBbt_00040052(X1), not FBbt_00040006(X1), not FBbt_00002424(X1), not FBbt_00005492(X1).
+FBbt_00006041(X1) :- FBbt_00040072(X1), FBbt_00003269(X2), FBbt_00004270(X3), FBbt_00002157(X2), FBbt_00015565(X1).
+p9(X1) :- FBbt_00001321(X1), FBbt_00000622(X2), FBbt_00004855(X2), p4(X1, X2), FBbt_00005073(X1), FBbt_00005721(X4).
+FBbt_00002465(X1) :- FBbt_00004766(X1), FBbt_00001127(X2), FBbt_00005516(X2), p9(X1), p5(X1, X2, X3), not p3(X1), not FBbt_00005331(X3).
+FBbt_00000785(X1) :- p4(X1, X2).
+p9(X1) :- FBbt_00004505(X1), FBbt_00003623(X2), FBbt_00001063(X1), FBbt_00005406(X3), FBbt_00001626(X4), p5(X1, X4, X3), FBbt_00004416(X2), FBbt_00100397(X6).
+FBbt_00005449(X1) :- FBbt_00100571(X1), FBbt_00002026(X2).
+FLY_ANATOMY.ONTOLOGY_fasciculates_with(X1, X2) :- FBbt_00000268(X1), FBbt_00003291(X2), p6(X1), not p9(X1), not p2(X1), not FBbt_00000359(X1), not FBbt_00004324(X2).
+p6(X1) :- FBbt_00100116(X1), p9(X2).
+FBbt_00002133(X1) :- FBbt_00005246(X1), p3(X1), FBbt_00001394(X3), FBbt_00007114(X3), FBbt_00007301(X1), not FBbt_00007309(X1), not p2(X1).
+FBbt_00002466(X1) :- FBbt_00003821(X1), p4(X1, X2), p4(X1, X2), p3(X1), not FBbt_00006046(X1).
+FBbt_00004259(X1) :- FBbt_00004925(X1).
+FBbt_00005741(X1) :- p5(X1, X2, X3), FBbt_00000463(X2).
+FBbt_00003340(X1) :- p9(X1), FBbt_00001940(X1), FBbt_00100061(X2), not FBbt_00002100(X1), not FBbt_00007270(X1), not FBbt_00004862(X1).
+FBbt_00001958(X1) :- FBbt_00001440(X1), not FBbt_00100435(X1), not FBbt_00000461(X1), not FBbt_00000389(X1), not FBbt_00004809(X1).
+FBbt_00000438(X1) :- p7(X1, X2).
+p6(X1) :- FBbt_00005333(X1), FBbt_00003190(X2), p2(X1), FBbt_00007145(X1), FBbt_00004971(X1), FBbt_00007552(X3).
+p6(X1) :- FBbt_00001184(X1), FBbt_00005607(X2).
+FBbt_00000363(X1) :- p2(X1), FBbt_00003044(X1), FBbt_00003645(X1), FBbt_00004660(X1), FBbt_00000194(X2), not FBbt_00005169(X2).
+p7(X1, X2) :- FBbt_00067030(X1), p2(X2), FBbt_00005724(X3), not FBbt_00004024(X1), not FBbt_00003185(X1), not FBbt_00005787(X3), not FBbt_00004069(X3).
+p10(X1, X2) :- FBbt_00004688(X1), FBbt_00005209(X2), p2(X3), not FBbt_00110023(X1), not p6(X1).
+FBbt_00001289(X1) :- p10(X1, X2).
+p8(X1, X2) :- FBbt_00001542(X1), p6(X2), p5(X3, X4, X5).
+FBbt_00005538(X1) :- p10(X1, X2), not FBbt_00004556(X2), not p9(X1), not FBbt_00001100(X1), not FBbt_00001441(X1), not FBbt_00000780(X2), not FBbt_00000550(X2).
+FBbt_00001970(X1) :- p10(X1, X2).
+FBbt_00007410(X1) :- p3(X1), FBbt_00005616(X1), FBbt_00001871(X1), FBbt_00000161(X2), FBbt_00000479(X2), FBbt_00007178(X1).
